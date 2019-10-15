@@ -1,21 +1,21 @@
 jobs:
     main:
         requires: [ ~pr, ~commit ]
-        image: node:6
+        image: node:10
         steps:
             - install: npm install
             - test: npm test
 
     tag-triggered:
         requires: [ ~tag ]
-        image: node:6
+        image: node:10
         steps:
             - install: npm install
             - test: npm test
 
     release-triggered:
         requires: [ ~release ]
-        image: node:6
+        image: node:10
         steps:
             - install: npm install
             - test: npm test
