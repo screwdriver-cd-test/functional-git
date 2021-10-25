@@ -28,7 +28,7 @@ jobs:
             - test: npm test
 
     release-specific-triggered:
-        requires: [ ~release:v1 ]
+        requires: [ ~release:v1.0 ]
         image: node:14
         steps:
             - install: npm install
