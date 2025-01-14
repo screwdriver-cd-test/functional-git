@@ -10,26 +10,30 @@ jobs:
         requires: [ ~tag ]
         image: node:14
         steps:
-            - install: npm install
-            - test: npm test
+            - echo: echo test
+        annotations:
+            screwdriver.cd/virtualJob: true
 
     release-triggered:
         requires: [ ~release ]
         image: node:14
         steps:
-            - install: npm install
-            - test: npm test
+            - echo: echo test
+        annotations:
+            screwdriver.cd/virtualJob: true
 
     tag-specific-triggered:
         requires: [ ~tag:/^v1\..*/ ]
         image: node:14
         steps:
-            - install: npm install
-            - test: npm test
+            - echo: echo test
+        annotations:
+            screwdriver.cd/virtualJob: true
 
     release-specific-triggered:
         requires: [ ~release:v1.0 ]
         image: node:14
         steps:
-            - install: npm install
-            - test: npm test
+            - echo: echo test
+        annotations:
+            screwdriver.cd/virtualJob: true
