@@ -10,17 +10,37 @@ jobs:
         requires: [ ~tag ]
         image: node:14
         steps:
-            - echo: echo test
-        annotations:
-            screwdriver.cd/virtualJob: true
+            - test: |
+                    tag_name=$(meta get sd.tag.name)
+                    echo "${tag_name}"
+
+                    if [ "$tag_name" != "v1.0" ] && [ "$tag_name" != "v2.0" ]; then
+                        echo 'The metadata sd.tag.name should be set.'
+                        exit 1
+                    fi
 
     release-triggered:
         requires: [ ~release ]
         image: node:14
         steps:
-            - echo: echo test
-        annotations:
-            screwdriver.cd/virtualJob: true
+            - test: |
+                    release_name=$(meta get sd.release.name)
+                    release_id=$(meta get sd.release.id)
+                    release_author=$(meta get sd.release.author)
+                    echo "${release_id}, ${release_name}, ${release_author}"
+
+                    if [ "$release_name" != "v1.0" ] && [ "$release_name" != "v2.0" ]; then
+                        echo 'The metadata sd.release.name should be set.'
+                        exit 1
+                    fi
+                    if [ "$release_id" = "null" ]; then
+                        echo 'The metadata sd.release.id should be set.'
+                        exit 1
+                    fi
+                    if [ "$release_author" = "null" ]; then
+                        echo 'The metadata sd.release.author should be set.'
+                        exit 1
+                    fi
 
     tag-specific-triggered:
         requires: [ ~tag:/^v1\..*/ ]
