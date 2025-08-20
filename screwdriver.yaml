@@ -60,6 +60,7 @@ jobs:
 
     closed-trigger:
         requires: [ ~pr-closed ]
+        image: node:14
         steps:
             - echo: echo test
         annotations:
@@ -67,6 +68,7 @@ jobs:
 
     branch-specific-closed-trigger:
         requires: [ ~pr-closed:pr-closed-trigger ]
+        image: node:14
         steps:
             - test: |
                     prName=$(meta get sd.pr.name)
