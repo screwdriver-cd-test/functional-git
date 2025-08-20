@@ -57,3 +57,33 @@ jobs:
             - echo: echo test
         annotations:
             screwdriver.cd/virtualJob: true
+
+    closed-trigger:
+        requires: [ ~pr-closed ]
+        steps:
+            - echo: echo test
+        annotations:
+            screwdriver.cd/virtualJob: true
+
+    branch-specific-closed-trigger:
+        requires: [ ~pr-closed:pr-closed-trigger ]
+        steps:
+            - test: |
+                    prName=$(meta get sd.pr.name)
+                    prMerged=$(meta get sd.pr.merged)
+                    prNumber=$(meta get sd.pr.number)
+
+                    echo "${prName} - ${prMerged} - ${prNumber}"
+
+                    if [ -z "$prName" ]; then
+                        echo 'The metadata sd.pr.name should be set.'
+                        exit 1
+                    fi
+                    if [ "$prMerged" != "true" ]; then
+                        echo 'The metadata sd.pr.merged should be true.'
+                        exit 1
+                    fi
+                    if [ -z "$prNumber" ]; then
+                        echo 'The metadata sd.pr.number should be set.'
+                        exit 1
+                    fi
