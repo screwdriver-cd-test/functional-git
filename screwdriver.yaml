@@ -1,3 +1,6 @@
+parameters:
+    pipeline_test: "PIPELINE LEVEL PARAMETER"
+
 jobs:
     main:
         requires: [ ~pr, ~commit ]
@@ -69,13 +72,18 @@ jobs:
     branch-specific-closed-trigger:
         requires: [ ~pr-closed:pr-closed-trigger ]
         image: node:14
+        parameters:
+            job_test: "JOB LEVEL PARAMETER"
         steps:
             - test: |
                     prName=$(meta get sd.pr.name)
                     prMerged=$(meta get sd.pr.merged)
                     prNumber=$(meta get sd.pr.number)
+                    pipelineParam=$(meta get parameters.pipeline_test.value)
+                    jobParam=$(meta get parameters.job_test.value)
 
                     echo "${prName} - ${prMerged} - ${prNumber}"
+                    echo "${pipelineParam} - ${jobParam}"
 
                     if [ -z "$prName" ]; then
                         echo 'The metadata sd.pr.name should be set.'
@@ -87,5 +95,13 @@ jobs:
                     fi
                     if [ -z "$prNumber" ]; then
                         echo 'The metadata sd.pr.number should be set.'
+                        exit 1
+                    fi
+                    if [ "$pipelineParam" != "PIPELINE LEVEL PARAMETER" ]; then
+                        echo 'The pipeline level parameter should be set.'
+                        exit 1
+                    fi
+                    if [ "$jobParam" != "JOB LEVEL PARAMETER" ]; then
+                        echo 'The job level parameter should be set.'
                         exit 1
                     fi
